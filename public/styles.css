@@ -1,5 +1,32 @@
 #map {
     margin-top: 10px;
     height: 90vh;
-    width: 800px;
+    width: 1000px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+body {
+    background-color: rgb(23, 23, 23);
+    color: white;
+}
+
+.gpt-insights {
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 90vh;
+    width: 500px;
+    display: inline-block;
+    flex-direction: column;
+    background-color: rgb(42, 42, 42);
+    color: white;
+    padding: 10px;
+}
+
+.gpt-insights .card {
+    margin-bottom: 10px;
+}
+
+.gpt-insights-response {
+    overflow-y: auto;
 }
