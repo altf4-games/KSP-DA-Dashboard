@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 
 app.use(express.static('public'));
+app.use(express.json());
 app.use(cors());
 
 require('dotenv').config();
