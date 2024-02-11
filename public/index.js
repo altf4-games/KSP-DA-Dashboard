@@ -119,7 +119,7 @@ const getInsights = async () => {
         infraImprovementsText.innerText = "Loading...";
         insightsText.innerText = "Loading...";
 
-        fetch(`/insights?inputString=${encodeURIComponent(infraPrompt)}`, {
+        fetch(`/api/v1/insights?inputString=${encodeURIComponent(infraPrompt)}`, {
             method: 'GET'
         })
         .then((response) => response.json())
@@ -128,7 +128,7 @@ const getInsights = async () => {
         })
         .catch((error) => console.error(error));
         
-        fetch(`/insights?inputString=${encodeURIComponent(insightPrompt)}`, {
+        fetch(`/api/v1/insights?inputString=${encodeURIComponent(insightPrompt)}`, {
             method: 'GET'
         })
         .then((response) => response.json())

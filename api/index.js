@@ -12,7 +12,7 @@ const openai = new OpenAI({
   apiKey: process.env['OPENAI_API_KEY'],
 });
 
-app.get('/insights', async (req, res) => {
+app.get('/api/v1/insights', async (req, res) => {
     try {
         const inputString = req.query.inputString;
         const generatedText = await generateText(inputString);
