@@ -66,3 +66,10 @@ const drawChart = (accidentsByDay) => {
         }
     });
 }
+
+/*fetch(`/insights?inputString=${encodeURIComponent('write hello world in python')}`, {
+    method: 'GET'
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data.choices[0].message.content))
+  .catch((error) => console.error(error));*/
