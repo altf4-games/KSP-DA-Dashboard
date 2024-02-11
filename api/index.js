@@ -15,12 +15,12 @@ const openai = new OpenAI({
 
 app.get('/api/v1/insights', async (req, res) => {
     try {
-        const inputString = req.query.inputString;
-        const generatedText = await generateText(inputString);
-        res.json(generatedText);
+      const inputString = req.query.inputString;
+      const generatedText = await generateText(inputString);
+      res.json(generatedText);
     } catch (error) {
-        console.error(error);
-        res.status(500).send('An error occurred');
+      console.error(error);
+      res.status(500).json({ error: 'Something went wrong' });
     }
 });
 

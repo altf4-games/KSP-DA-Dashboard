@@ -114,7 +114,7 @@ const insightsText = document.getElementsByClassName('in-text')[0];
 
 const getInsights = async () => {
     if (currentMarkerData !== undefined) {
-        const infraPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, suggest infrastructure improvements to reduce accidents`;
+        const infraPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, suggest infrastructure improvements to reduce accidents in single paragraph`;
         const insightPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, give a small summary in very few words, speed is in kmph`;
         infraImprovementsText.innerText = "Loading...";
         insightsText.innerText = "Loading...";
@@ -123,7 +123,7 @@ const getInsights = async () => {
             method: 'GET'
         })
         .then((response) => response.json())
-        .then((data) => {
+            .then((data) => {
             infraImprovementsText.innerText = data.choices[0].message.content;
         })
         .catch((error) => console.error(error));
@@ -132,7 +132,7 @@ const getInsights = async () => {
             method: 'GET'
         })
         .then((response) => response.json())
-        .then((data) => {
+            .then((data) => {
             insightsText.innerText = data.choices[0].message.content;
         })
         .catch((error) => console.error(error));
