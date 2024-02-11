@@ -30,3 +30,13 @@ body {
 .gpt-insights-response {
     overflow-y: auto;
 }
+
+.in-text {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.ii-text {
+    max-height: 75px;
+    overflow-y: auto;
+}

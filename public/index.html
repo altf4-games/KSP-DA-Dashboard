@@ -23,23 +23,22 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Analytics</a>
+                        <a class="nav-link" href="/insights/">Insights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about-us/">About Us</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Year
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">2023</a></li>
                             <li><a class="dropdown-item" href="#">~</a></li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
@@ -50,22 +49,21 @@
         </div>
     </nav>
     <div>
-    <div>
         <div id="map"></div>
         <div class="gpt-insights">
-            <h3 class="gpt-insights-header text-center" data-bs-theme="dark">Insights</h3>
-            <button class="btn btn-primary mb-3" onclick="getInsights()">Get Insights</button>
+            <h4 class="gpt-insights-header text-center" data-bs-theme="dark">✨INSIGHTS</h4>
+            <button class="btn btn-primary mb-3 in-btn" onclick="getInsights()" disabled>Get Insights</button>
             <div class="gpt-insights-response bg-dark" id="gpt-response">
-                <div class="card mb-3 text-bg-dark">
+                <div class="card mb-2 text-bg-dark">
                     <div class="card-body">
                         <h5 class="card-title">Insights</h5>
-                        <p class="card-text">TODO: GPT INTEGERATION</p>
+                        <p class="card-text in-text">~</p>
                     </div>
                 </div>
-                <div class="card mb-3 text-bg-dark">
+                <div class="card mb-2 text-bg-dark">
                     <div class="card-body">
                         <h5 class="card-title">Infrastructure Improvements</h5>
-                        <p class="card-text">TODO: GPT INTEGERATION</p>
+                        <p class="card-text ii-text">~</p>
                     </div>
                 </div>
                 <canvas id="accidentChart"></canvas>

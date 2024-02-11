@@ -1,0 +1,13 @@
+body {
+    background-color: rgb(23, 23, 23);
+    color: white;
+}
+
+.team-member {
+    margin-bottom: 40px;
+}
+
+.team-member img {
+    max-width: 200px;
+    border-radius: 50%;
+}
