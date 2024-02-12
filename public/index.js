@@ -57,7 +57,7 @@ const drawChart = (accidentsByDay) => {
     const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             datasets: [{
                 label: 'Number of Accidents',
                 data: accidentsByDay,
