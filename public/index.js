@@ -26,8 +26,8 @@ Papa.parse('AccidentsBig.csv', {
                     <br>date: ${row[29]}
                     <br>time: ${row[8]}
                     <br>speed limit: ${row[14]}
-                    <br>weather conditions: ${row[22]}
-                    <br>light conditions: ${row[21]}
+                    <br>weather conditions: ${weatherConditions[row[22]]}
+                    <br>light conditions: ${lightConditions[row[21]]}
                 `;
                 const marker = L.marker([row[2], row[1]]).addTo(map).bindPopup(data);
                 marker.on('click', () => {
@@ -138,3 +138,42 @@ const getInsights = async () => {
         .catch((error) => console.error(error));
     }
 };
+
+Papa.parse("AccidentsBig.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+        var data = results.data;
+        var accidentClusters = {};
+        var threshold = 3;
+
+        data.forEach(function(row) {
+            var lat = parseFloat(row.latitude);
+            var lon = parseFloat(row.longitude);
+
+            var key = Math.round(lat * 100) / 100 + "_" + Math.round(lon * 100) / 100;
+
+            if (!accidentClusters[key]) {
+                accidentClusters[key] = {
+                    count: 0,
+                    lat: lat,
+                    lon: lon
+                };
+            }
+
+            accidentClusters[key].count++;
+        });
+
+        for (var key in accidentClusters) {
+            var cluster = accidentClusters[key];
+            if (cluster.count > threshold) {
+                var circle = L.circle([cluster.lat, cluster.lon], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5,
+                    radius: cluster.count * 100
+                }).addTo(map);
+            }
+        }
+    }
+});
