@@ -115,7 +115,7 @@ const trafficDeploymentText = document.getElementsByClassName('td-text')[0];
 
 const getInsights = async () => {
     if (currentMarkerData !== undefined) {
-        const infraPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, suggest infrastructure improvements to reduce accidents in single paragraph`;
+        const infraPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, suggest infrastructure improvements to reduce accidents in single short paragraph`;
         const insightPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, give a small summary in very few words, speed is in kmph`;
         const trafficPrompt = `based on the ${JSON.stringify(currentMarkerData)} data , can you suggest some traffic deployment plans in a single short paragraph to lower accidents.`;
         infraImprovementsText.innerText = "Loading...";
