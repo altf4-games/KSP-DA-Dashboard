@@ -43,21 +43,47 @@
     </nav>
     <div>
         <div id="map"></div>
-        <div class="gpt-insights">
-            <h4 class="gpt-insights-header text-center" data-bs-theme="dark">✨INSIGHTS</h4>
-            <p class="">Select any marker then click on the button below</p>
-            <button class="btn btn-primary mb-3 in-btn" onclick="getInsights()" disabled>Get Insights</button>
-            <div class="gpt-insights-response bg-dark" id="gpt-response">
-                <div class="card mb-2 text-bg-dark">
-                    <div class="card-body">
-                        <h5 class="card-title">Infrastructure Improvements</h5>
-                        <p class="card-text ii-text">~</p>
+            <div class="side-panel">
+                <div class="card text-bg-dark">
+                    <div class="location-dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Select Location
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><button class="dropdown-item">Bengaluru</button></li>
+                            <li><button class="dropdown-item">Mangaluru</button></li>
+                            <li><button class="dropdown-item">Udipi</button></li>
+                        </ul>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Traffic Deployment Suggestions</h5>
-                        <p class="card-text td-text">~</p>
+                    <div class="filter-dropdown mt-1">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Select Zone
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                            <li><button class="dropdown-item">Low Severity</button></li>
+                            <li><button class="dropdown-item">Medium Severity</button></li>
+                            <li><button class="dropdown-item">High Severity</button></li>
+                        </ul>
                     </div>
                 </div>
+                <div class="card mb-2 mt-2 text-bg-dark">
+                    <h4 class="gpt-insights-header text-center" data-bs-theme="dark">✨INSIGHTS</h4>
+                    <p class="">Select any marker then click on the button below</p>
+                    <button class="btn btn-primary mb-3 in-btn" onclick="getInsights()" disabled>Get Insights</button>
+                    <div class="gpt-insights-response bg-dark" id="gpt-response">
+                        <div class="card mb-2 text-bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Infrastructure Improvements</h5>
+                                <p class="card-text ii-text">~</p>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Traffic Deployment Suggestions</h5>
+                                <p class="card-text td-text">~</p>
+                            </div>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>

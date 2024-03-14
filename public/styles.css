@@ -1,7 +1,7 @@
 #map {
-    margin-top: 10px;
+    margin-top: 1vh;
     height: 90vh;
-    width: 1000px;
+    width: 70vw;
     display: inline-block;
     vertical-align: top;
 }
@@ -11,16 +11,16 @@ body {
     color: white;
 }
 
-.gpt-insights {
-    margin-top: 10px;
-    margin-left: 5px;
+.side-panel {
+    margin-top: 1vh;
+    margin-left: 0.5vw;
     height: 90vh;
-    width: 500px;
+    width: 27.5vw;
     display: inline-block;
     flex-direction: column;
     background-color: rgb(42, 42, 42);
     color: white;
-    padding: 10px;
+    padding: 1vh;
 }
 
 .gpt-insights .card {
