@@ -110,16 +110,14 @@ const lightConditions = {
 
 let currentMarkerData;
 const infraImprovementsText = document.getElementsByClassName('ii-text')[0];
-const insightsText = document.getElementsByClassName('in-text')[0];
 const trafficDeploymentText = document.getElementsByClassName('td-text')[0];
 
 const getInsights = async () => {
     if (currentMarkerData !== undefined) {
         const infraPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, suggest infrastructure improvements to reduce accidents in single short paragraph`;
-        const insightPrompt = `based on the ${JSON.stringify(currentMarkerData)} data, give a small summary in very few words, speed is in kmph`;
         const trafficPrompt = `based on the ${JSON.stringify(currentMarkerData)} data , can you suggest some traffic deployment plans in a single short paragraph to lower accidents.`;
         infraImprovementsText.innerText = "Loading...";
-        insightsText.innerText = "Loading...";
+        trafficDeploymentText.innerText = "Loading...";
 
         fetch(`/api/v1/insights?inputString=${encodeURIComponent(infraPrompt)}`, {
             method: 'GET'
@@ -127,15 +125,6 @@ const getInsights = async () => {
         .then((response) => response.json())
             .then((data) => {
             infraImprovementsText.innerText = data.choices[0].message.content;
-        })
-        .catch((error) => console.error(error));
-        
-        fetch(`/api/v1/insights?inputString=${encodeURIComponent(insightPrompt)}`, {
-            method: 'GET'
-        })
-        .then((response) => response.json())
-            .then((data) => {
-            insightsText.innerText = data.choices[0].message.content;
         })
         .catch((error) => console.error(error));
         
