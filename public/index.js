@@ -1,15 +1,10 @@
 const apiKey = "pCKjhiDCnrgyjAqbqaeEMeJYmenJGWz6";
-const TRAFFIC_INCIDENTS_STYLE = "s0";
 
 const map = tt.map({
   key: apiKey,
   container: "map",
   center: [77.5946, 12.9999],
   zoom: 15,
-  style:
-    "https://api.tomtom.com/style/1/style/22.2.1-*?map=2/basic_street-light&traffic_incidents=incidents_" +
-    TRAFFIC_INCIDENTS_STYLE +
-    "&poi=2/poi_light",
   stylesVisibility: {
     trafficIncidents: true,
   },
