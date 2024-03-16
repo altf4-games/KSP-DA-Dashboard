@@ -43,7 +43,7 @@ Papa.parse("AccidentsBig.csv", {
           .addTo(map)
           .setPopup(new tt.Popup().setHTML(data));
 
-        marker.on("click", () => {
+        marker._element.addEventListener("click", () => {
           document.getElementsByClassName("in-btn")[0].disabled = false;
           currentMarkerData = {
             severity: row[4],
