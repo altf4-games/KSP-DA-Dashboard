@@ -29,7 +29,7 @@ body {
     color: white;
     padding: 1vh;
     z-index: 999;
-    /* Ensure it's on top of other elements */
+    overflow-y:scroll;
 }
 
 .gpt-insights .card {
