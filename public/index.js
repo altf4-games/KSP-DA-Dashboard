@@ -5,11 +5,15 @@ const map = tt.map({
   key: apiKey,
   container: "map",
   center: [77.5946, 12.9999],
-  zoom: 15,
+  zoom: 14,
   stylesVisibility: {
     trafficIncidents: true,
   },
 });
+
+const setLocation = (lat, lon) => {
+  map.setCenter([lon, lat]);
+};
 
 map.on("load", function () {
   map.showTrafficFlow();
