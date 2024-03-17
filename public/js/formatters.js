@@ -1,101 +1,155 @@
-function convertToPoint(t) {
-  return { point: { latitude: t.lat, longitude: t.lng } };
+function convertToPoint(position) {
+    return {
+        point: {
+            latitude: position.lat,
+            longitude: position.lng
+        }
+    };
 }
-function convertToSpeedFormat(t, r) {
-  return t + (r || "km/h");
+
+function convertToSpeedFormat(speedValue, unit) {
+    var speedUnit = unit || 'km/h';
+
+    return speedValue + speedUnit;
 }
-function formatToDurationTimeString(t) {
-  var r = moment.utc(1e3 * t);
-  if (t > 86400) {
-    var o = (function (t) {
-      return { days: Math.floor(t / 86400), rest: t % 86400 };
-    })(t);
-    return (
-      o.days +
-      (1 === o.days ? " day " : " days ") +
-      moment.utc(1e3 * o.rest).format("h [h] m [m]")
-    );
-  }
-  return t > 3600
-    ? r.format("H [h] m [m] s [s]")
-    : t > 60
-    ? r.format("m [m] s [s]")
-    : t > 0
-    ? r.format("s [s]")
-    : "No delay";
+
+// Takes number of seconds as a parameter and returns a formatted time
+function formatToDurationTimeString(secondsValue) {
+
+    function getNumberOfDays(secondsValue) {
+        var days = Math.floor(secondsValue / (3600 * 24));
+        var rest = secondsValue % (3600 * 24);
+
+        return {
+            days: days,
+            rest: rest
+        };
+    }
+
+    function getProperDaysLabel(days) {
+        return days === 1 ? ' day ' : ' days ';
+    }
+
+    var miliseconds = moment.utc(secondsValue * 1000);
+
+    if (secondsValue > 3600 * 24) {
+        var numberOfDays = getNumberOfDays(secondsValue);
+
+        var daysString = numberOfDays.days + getProperDaysLabel(numberOfDays.days);
+        var hoursAndMinutes = moment.utc(numberOfDays.rest * 1000);
+        var hoursAndMinutesString = hoursAndMinutes.format('h [h] m [m]');
+
+        return daysString + hoursAndMinutesString;
+    } else if (secondsValue > 3600) {
+        return miliseconds.format('H [h] m [m] s [s]');
+    } else if (secondsValue > 60) {
+        return miliseconds.format('m [m] s [s]');
+    } else if (secondsValue > 0) {
+        return miliseconds.format('s [s]');
+    }
+
+    return 'No delay';
 }
-function formatToShortDurationTimeString(t) {
-  var r = moment.duration(t, "seconds");
-  return t > 3600
-    ? r.format("h [h] m [m]")
-    : t > 60
-    ? r.format("m [m]")
-    : "No delay";
+
+function formatToShortDurationTimeString(secondsValue) {
+    var duration = moment.duration(secondsValue, 'seconds');
+
+    if (secondsValue > 3600) {
+        return duration.format('h [h] m [m]');
+    } else if (secondsValue > 60) {
+        return duration.format('m [m]');
+    }
+
+    return 'No delay';
 }
-function formatToTimeString(t) {
-  return moment(t).format("HH:mm:ss");
+
+// Takes date (of the current day) as a parameter and returns a time (HH:MM:SS) in AM/PM or 24H format depending on the user's location
+function formatToTimeString(date) {
+    return moment(date).format('HH:mm:ss');
 }
-function formatToDateString(t) {
-  return moment(t).format("DD/MM/YYYY");
+
+function formatToDateString(date) {
+    return moment(date).format('DD/MM/YYYY');
 }
-function formatToShortenedTimeString(t) {
-  return moment(t).format("h:mm a");
+
+function formatToShortenedTimeString(date) {
+    return moment(date).format('h:mm a');
 }
-function dateTimeStringToObject(t, r) {
-  if (!t.match(/^(\d{2})\/(\d{2})\/(\d{4})$/))
-    throw new TypeError(
-      "Wrong date format provided. It needs to follow dd/mm/yyyy pattern."
-    );
-  return moment(t + r, "DD/MM/YYYYh:mm A").toDate();
+
+function dateTimeStringToObject(dateString, timeString) {
+    if (!dateString.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)) {
+        throw new TypeError('Wrong date format provided. It needs to follow dd/mm/yyyy pattern.');
+    }
+
+    return moment(dateString + timeString, 'DD/MM/YYYYh:mm A').toDate();
 }
-function dateStringToObject(t) {
-  return moment(t, "YYYY-MM-DD").toDate();
+
+function dateStringToObject(dateString) {
+    return moment(dateString, 'YYYY-MM-DD').toDate();
 }
-function formatToDateWithFullMonth(t) {
-  return moment(t).format("MMMM D, YYYY");
+
+function formatToDateWithFullMonth(date) {
+    return moment(date).format('MMMM D, YYYY');
 }
-function formatToExpandedDateTimeString(t) {
-  return moment(t).format("dddd, MMM D, HH:mm:ss");
+
+// Takes date (of the future day) as a parameter and returns a formatted date (DAY-OF-THE-WEEK, MMM DD, HH:MM:SS)
+function formatToExpandedDateTimeString(date) {
+    return moment(date).format('dddd, MMM D, HH:mm:ss');
 }
-function formatToDateTimeString(t) {
-  return moment(t).format("MMM D, HH:mm:ss");
+
+function formatToDateTimeString(date) {
+    return moment(date).format('MMM D, HH:mm:ss');
 }
-function formatToDateTimeStringForTrafficIncidents(t) {
-  return moment(t).format("YYYY-MM-DD HH:mm");
+
+function formatToDateTimeStringForTrafficIncidents(date) {
+    return moment(date).format('YYYY-MM-DD HH:mm');
 }
-function formatAsImperialDistance(t) {
-  var r = Math.round(1.094 * t);
-  return r >= 1760 ? Math.round(r / 17.6) / 100 + " mi" : r + " yd";
+
+function formatAsImperialDistance(distanceMeters) {
+    var yards = Math.round(distanceMeters * 1.094);
+
+    if (yards >= 1760) {
+        return Math.round(yards / 17.6) / 100 + ' mi';
+    }
+    return yards + ' yd';
 }
-function formatAsMetricDistance(t) {
-  var r = Math.round(t);
-  return r >= 1e3 ? Math.round(r / 100) / 10 + " km" : r + " m";
+
+function formatAsMetricDistance(distanceMeters) {
+    var distance = Math.round(distanceMeters);
+
+    if (distance >= 1000) {
+        return Math.round(distance / 100) / 10 + ' km';
+    }
+    return distance + ' m';
 }
-function roundLatLng(t) {
-  return Math.round(1e6 * t) / 1e6;
+
+function roundLatLng(num) {
+    return Math.round(num * 1000000) / 1000000;
 }
-function formatCategoryName(t) {
-  var r = t.toLowerCase().replace(/_/g, " ");
-  return r.charAt(0).toUpperCase() + r.slice(1);
+
+function formatCategoryName(name) {
+    var formattedName = name.toLowerCase().replace(/_/g, ' ');
+    return formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
 }
+
 var Formatters = {
-  convertToPoint: convertToPoint,
-  convertToSpeedFormat: convertToSpeedFormat,
-  formatToDurationTimeString: formatToDurationTimeString,
-  formatToShortDurationTimeString: formatToShortDurationTimeString,
-  formatToTimeString: formatToTimeString,
-  formatToExpandedDateTimeString: formatToExpandedDateTimeString,
-  formatAsImperialDistance: formatAsImperialDistance,
-  formatAsMetricDistance: formatAsMetricDistance,
-  roundLatLng: roundLatLng,
-  formatToDateString: formatToDateString,
-  formatToShortenedTimeString: formatToShortenedTimeString,
-  dateTimeStringToObject: dateTimeStringToObject,
-  dateStringToObject: dateStringToObject,
-  formatToDateWithFullMonth: formatToDateWithFullMonth,
-  formatCategoryName: formatCategoryName,
-  formatToDateTimeString: formatToDateTimeString,
-  formatToDateTimeStringForTrafficIncidents:
-    formatToDateTimeStringForTrafficIncidents,
+    convertToPoint: convertToPoint,
+    convertToSpeedFormat: convertToSpeedFormat,
+    formatToDurationTimeString: formatToDurationTimeString,
+    formatToShortDurationTimeString: formatToShortDurationTimeString,
+    formatToTimeString: formatToTimeString,
+    formatToExpandedDateTimeString: formatToExpandedDateTimeString,
+    formatAsImperialDistance: formatAsImperialDistance,
+    formatAsMetricDistance: formatAsMetricDistance,
+    roundLatLng: roundLatLng,
+    formatToDateString: formatToDateString,
+    formatToShortenedTimeString: formatToShortenedTimeString,
+    dateTimeStringToObject: dateTimeStringToObject,
+    dateStringToObject: dateStringToObject,
+    formatToDateWithFullMonth: formatToDateWithFullMonth,
+    formatCategoryName: formatCategoryName,
+    formatToDateTimeString: formatToDateTimeString,
+    formatToDateTimeStringForTrafficIncidents: formatToDateTimeStringForTrafficIncidents
 };
+
 window.Formatters = window.Formatters || Formatters;

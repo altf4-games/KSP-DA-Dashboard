@@ -1,105 +1,145 @@
-function IncidentDetailsMarkersManager(e, t) {
-  (this.incidentMarkers = {}),
-    (this.map = e),
-    (this.incidentMarkerFactory = t),
-    (this.addMarkers = this.addMarkers.bind(this)),
-    (this._addMarker = this._addMarker.bind(this)),
-    (this._mapResponseToFeaturesDictionary =
-      this._mapResponseToFeaturesDictionary.bind(this)),
-    (this.getMarkers = this.getMarkers.bind(this));
+function IncidentDetailsMarkersManager(map, incidentMarkerFactory) {
+    this.incidentMarkers = {};
+    this.map = map;
+    this.incidentMarkerFactory = incidentMarkerFactory;
+
+    this.addMarkers = this.addMarkers.bind(this);
+    this._addMarker = this._addMarker.bind(this);
+    this._mapResponseToFeaturesDictionary = this._mapResponseToFeaturesDictionary.bind(this);
+    this.getMarkers = this.getMarkers.bind(this);
 }
-function IncidentsDetailsManager(e, t, n) {
-  (this.map = e),
-    (this.services = t),
-    (this.options = n),
-    (this.onDetailsUpdated = this.options.onDetailsUpdated),
-    (this.incidentsMarkerManager = new IncidentDetailsMarkersManager(
-      e,
-      n.incidentMarkerFactory
-    )),
-    (this._fetchIncidentDetails = this._fetchIncidentDetails.bind(this)),
-    (this._registerEvents = this._registerEvents.bind(this)),
-    (this._updateIncidentMarkers = this._updateIncidentMarkers.bind(this)),
-    this._updateIncidentMarkers(),
+
+IncidentDetailsMarkersManager.prototype.addMarkers = function(incidents) {
+    var newMarkers = this._mapResponseToFeaturesDictionary(incidents);
+
+    //Diff steps:
+    // 1. Iterate over all existing markers
+    // 2. If newMarkers doesn't contain the element, then remove EXISTING marker
+    // 3. If newMarkers contain the element, then update EXISTING marker and remove
+    //    updated marker from the list, so it is not added twice
+    // 4. Add all remaining new markers.
+    Object.keys(this.incidentMarkers).forEach(function(featureId) {
+        if (!newMarkers[featureId]) {
+            this.incidentMarkers[featureId].getMarker().remove();
+            delete this.incidentMarkers[featureId];
+        } else {
+            this.incidentMarkers[featureId].update(newMarkers[featureId]);
+            delete newMarkers[featureId];
+        }
+    }.bind(this));
+    //eslint-disable-next-line
+    Object.values(newMarkers).forEach(function(feature) {
+        this._addMarker(feature);
+    }.bind(this));
+};
+
+IncidentDetailsMarkersManager.prototype._addMarker = function(feature) {
+    var featureId = feature.properties.id;
+    var incidentMarker = this.incidentMarkerFactory();
+    incidentMarker.markerFactory(feature);
+
+    this.incidentMarkers[featureId] = incidentMarker;
+    incidentMarker.getMarker().addTo(this.map);
+};
+
+IncidentDetailsMarkersManager.prototype._mapResponseToFeaturesDictionary = function(response) {
+    return response.incidents.reduce(function(result, feature) {
+        var current = {};
+        feature.geometry.type = 'Point';
+        feature.geometry.coordinates = feature.geometry.coordinates[0];
+        current[feature.properties.id] = feature;
+        return Object.assign(result, current);
+    }, Object.create(null));
+};
+
+IncidentDetailsMarkersManager.prototype.getMarkers = function() {
+    var markers = {};
+    Object.keys(this.incidentMarkers).forEach(function(featureId) {
+        markers[featureId] = this.incidentMarkers[featureId].getMarker();
+    }.bind(this));
+
+    return markers;
+};
+
+function IncidentsDetailsManager(map, services, options) {
+    this.map = map;
+    this.services = services;
+    this.options = options;
+    this.onDetailsUpdated = this.options.onDetailsUpdated;
+    this.incidentsMarkerManager = new IncidentDetailsMarkersManager(map, options.incidentMarkerFactory);
+
+    this._fetchIncidentDetails = this._fetchIncidentDetails.bind(this);
+    this._registerEvents = this._registerEvents.bind(this);
+    this._updateIncidentMarkers = this._updateIncidentMarkers.bind(this);
+
+    this._updateIncidentMarkers();
     this._registerEvents();
 }
-(IncidentDetailsMarkersManager.prototype.addMarkers = function (e) {
-  var t = this._mapResponseToFeaturesDictionary(e);
-  Object.keys(this.incidentMarkers).forEach(
-    function (e) {
-      t[e]
-        ? (this.incidentMarkers[e].update(t[e]), delete t[e])
-        : (this.incidentMarkers[e].getMarker().remove(),
-          delete this.incidentMarkers[e]);
-    }.bind(this)
-  ),
-    Object.values(t).forEach(
-      function (e) {
-        this._addMarker(e);
-      }.bind(this)
-    );
-}),
-  (IncidentDetailsMarkersManager.prototype._addMarker = function (e) {
-    var t = e.properties.id,
-      n = this.incidentMarkerFactory();
-    n.markerFactory(e),
-      (this.incidentMarkers[t] = n),
-      n.getMarker().addTo(this.map);
-  }),
-  (IncidentDetailsMarkersManager.prototype._mapResponseToFeaturesDictionary =
-    function (e) {
-      return e.incidents.reduce(function (e, t) {
-        var n = {};
-        return (
-          (t.geometry.type = "Point"),
-          (t.geometry.coordinates = t.geometry.coordinates[0]),
-          (n[t.properties.id] = t),
-          Object.assign(e, n)
-        );
-      }, Object.create(null));
-    }),
-  (IncidentDetailsMarkersManager.prototype.getMarkers = function () {
-    var e = {};
-    return (
-      Object.keys(this.incidentMarkers).forEach(
-        function (t) {
-          e[t] = this.incidentMarkers[t].getMarker();
-        }.bind(this)
-      ),
-      e
-    );
-  }),
-  (IncidentsDetailsManager.prototype._fetchIncidentDetails = function () {
-    var e = {
-      key: this.options.key,
-      boundingBox: this.map.getBounds(),
-      fields:
-        "{\n            incidents {\n                type,\n                geometry {\n                    type,\n                    coordinates\n                },\n                properties {\n                    id,\n                    iconCategory,\n                    magnitudeOfDelay,\n                    events {\n                        description,\n                        code,\n                        iconCategory\n                    },\n                    startTime,\n                    endTime,\n                    from,\n                    to,\n                    length,\n                    delay,\n                    roadNumbers,\n                    aci {\n                        probabilityOfOccurrence,\n                        numberOfReports,\n                        lastReportTime\n                    }\n                }\n            }\n        }",
+
+IncidentsDetailsManager.prototype._fetchIncidentDetails = function() {
+    var requestOptions = {
+        key: this.options.key,
+        boundingBox: this.map.getBounds(),
+        fields: `{
+            incidents {
+                type,
+                geometry {
+                    type,
+                    coordinates
+                },
+                properties {
+                    id,
+                    iconCategory,
+                    magnitudeOfDelay,
+                    events {
+                        description,
+                        code,
+                        iconCategory
+                    },
+                    startTime,
+                    endTime,
+                    from,
+                    to,
+                    length,
+                    delay,
+                    roadNumbers,
+                    aci {
+                        probabilityOfOccurrence,
+                        numberOfReports,
+                        lastReportTime
+                    }
+                }
+            }
+        }`
     };
-    return this.services.incidentDetailsV5(e);
-  }),
-  (IncidentsDetailsManager.prototype._registerEvents = function () {
-    var e = window.debounce(
-      function (e) {
-        "vectorTilesIncidents" === e.sourceId && this._updateIncidentMarkers();
-      }.bind(this),
-      500
-    );
-    this.map.on("sourcedata", e),
-      this.map.on("moveend", this._updateIncidentMarkers),
-      this.map.on("zoomend", this._updateIncidentMarkers);
-  }),
-  (IncidentsDetailsManager.prototype._updateIncidentMarkers = function () {
-    this.map.getZoom() > 9 &&
-      this._fetchIncidentDetails().then(
-        function (e) {
-          this.incidentsMarkerManager.addMarkers(e),
-            this.onDetailsUpdated({
-              trafficIncidents: e,
-              markers: this.incidentsMarkerManager.getMarkers(),
-            });
-        }.bind(this)
-      );
-  }),
-  (window.IncidentsDetailsManager =
-    window.IncidentsDetailsManager || IncidentsDetailsManager);
+
+    return this.services.incidentDetailsV5(requestOptions);
+};
+
+IncidentsDetailsManager.prototype._registerEvents = function() {
+    // We use thrird party debounce function from the CDN (see page head).
+    var sourceDataHandler = window.debounce(function(event) {
+        if (event.sourceId === 'vectorTilesIncidents') {
+            this._updateIncidentMarkers();
+        }
+    }.bind(this), 500);
+    this.map.on('sourcedata', sourceDataHandler);
+    this.map.on('moveend', this._updateIncidentMarkers);
+    this.map.on('zoomend', this._updateIncidentMarkers);
+};
+
+IncidentsDetailsManager.prototype._updateIncidentMarkers = function() {
+    const currentZoom = this.map.getZoom();
+    if (currentZoom > 9) {
+        this._fetchIncidentDetails()
+            .then(function(incidentDetails) {
+                this.incidentsMarkerManager.addMarkers(incidentDetails);
+                this.onDetailsUpdated({
+                    trafficIncidents: incidentDetails,
+                    markers: this.incidentsMarkerManager.getMarkers()
+                });
+            }.bind(this));
+    }
+};
+
+window.IncidentsDetailsManager = window.IncidentsDetailsManager || IncidentsDetailsManager;
