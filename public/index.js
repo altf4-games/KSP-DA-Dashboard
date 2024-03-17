@@ -1,13 +1,20 @@
 const apiKey = "pCKjhiDCnrgyjAqbqaeEMeJYmenJGWz6";
 const TRAFFIC_INCIDENTS_STYLE = "s0";
+const TRAFFIC_FLOW_STYLE = "2/flow_relative-light";
 
 const map = tt.map({
   key: apiKey,
   container: "map",
   center: [77.5946, 12.9999],
   zoom: 14,
+  style:
+    "https://api.tomtom.com/style/1/style/22.2.1-*?map=2/basic_street-light&traffic_incidents=incidents_" +
+    TRAFFIC_INCIDENTS_STYLE +
+    "&poi=2/poi_light&traffic_flow=" +
+    TRAFFIC_FLOW_STYLE,
   stylesVisibility: {
     trafficIncidents: true,
+    trafficFlow: true,
   },
 });
 
@@ -86,7 +93,7 @@ const accident_severity = {
   3: "Fatal",
 };
 
-let currentMarkerData;
+var currentMarkerData;
 const infraImprovementsText = document.getElementsByClassName("ii-text")[0];
 const trafficDeploymentText = document.getElementsByClassName("td-text")[0];
 
@@ -126,9 +133,9 @@ Papa.parse("AccidentsBig.csv", {
   download: true,
   header: true,
   complete: function (results) {
-    let data = results.data;
+    var data = results.data;
 
-    let heatmapData = {
+    var heatmapData = {
       type: "FeatureCollection",
       features: data.map(function (point) {
         return {
@@ -161,9 +168,9 @@ Papa.parse("AccidentsBig.csv", {
 });
 
 // Accident Data List
-let displayedIncidentsData = [],
+var displayedIncidentsData = [],
   formatters = Formatters;
-let iconsMapping = {
+var iconsMapping = {
   0: "danger",
   1: "accident",
   2: "fog",
@@ -178,15 +185,15 @@ let iconsMapping = {
   11: "flooding",
   14: "brokendownvehicle",
 };
-let incidentSeverity = {
+var incidentSeverity = {
   0: "unknown",
   1: "minor",
   2: "moderate",
   3: "major",
   4: "undefined",
 };
-let incidentsData = {};
-let incidentsMarkers = null,
+var incidentsData = {};
+var incidentsMarkers = null,
   results = document.querySelector(".js-results"),
   selectedClass = "-selected",
   selectedIncidentId = "",
@@ -214,7 +221,7 @@ map.on("load", function () {
   });
 });
 function compareIncidentCategory(a, b) {
-  let firstValue = a.properties[sortedByValue],
+  var firstValue = a.properties[sortedByValue],
     secondValue = b.properties[sortedByValue],
     modifier = sortDirection === "asc" ? 1 : -1;
   if (typeof firstValue === "string") {
@@ -224,7 +231,7 @@ function compareIncidentCategory(a, b) {
 }
 function convertToGeoJson(data) {
   return data.incidents.reduce(function (result, feature) {
-    let current = {};
+    var current = {};
     feature.geometry.type = "Point";
     feature.geometry.coordinates = feature.geometry.coordinates[0];
     current[feature.properties.id] = feature;
@@ -232,9 +239,9 @@ function convertToGeoJson(data) {
   }, {});
 }
 function createDisplayedIncidentsData() {
-  let array = [];
-  for (let incidentId in incidentsData) {
-    let incident = incidentsData[incidentId],
+  var array = [];
+  for (var incidentId in incidentsData) {
+    var incident = incidentsData[incidentId],
       properties = incident.properties;
     if (!properties.delay) {
       properties.delay = 0;
@@ -247,7 +254,7 @@ function createDisplayedIncidentsData() {
   return array;
 }
 function createIncidentDetailsContent(properties) {
-  let incidentDetailsElement = DomHelpers.elementFactory("div", "");
+  var incidentDetailsElement = DomHelpers.elementFactory("div", "");
   incidentDetailsElement.innerHTML =
     '<div class="tt-incidents-details">' +
     '<div class="tt-traffic-icon -details">' +
@@ -277,7 +284,7 @@ function separateRoadNumbers(roadNumbers) {
   return roadNumbers.length > 1 ? roadNumbers.join(" - ") : roadNumbers;
 }
 function createIncidentHeader() {
-  let headerNames = [
+  var headerNames = [
       {
         text: "Incident",
         attribute: "from",
@@ -294,7 +301,7 @@ function createIncidentHeader() {
     incidentHeader = document.querySelector(".tt-side-panel__header");
   incidentHeader.innerHTML = "";
   headerNames.forEach(function (headerName) {
-    let headerElement = DomHelpers.elementFactory("div", ""),
+    var headerElement = DomHelpers.elementFactory("div", ""),
       sortIcon =
         headerName.attribute === sortedByValue
           ? sortDirection === "asc"
@@ -314,10 +321,10 @@ function createIncidentHeader() {
   });
 }
 function createIncidentItemRow(markerData) {
-  let properties = markerData.properties,
+  var properties = markerData.properties,
     delaySeconds = properties.delay,
     lengthMeters = properties.length;
-  let incidentDelay = DomHelpers.elementFactory(
+  var incidentDelay = DomHelpers.elementFactory(
       "div",
       "",
       formatters.formatToDurationTimeString(delaySeconds)
@@ -341,7 +348,7 @@ function createIncidentItemRow(markerData) {
 function createIncidentsList(isSorted) {
   results.innerHTML = "";
   if (!displayedIncidentsData.length) {
-    let placeholder = DomHelpers.elementFactory(
+    var placeholder = DomHelpers.elementFactory(
       "div",
       "tt-overflow__placeholder -small",
       "No data for this view, try to move or zoom..."
@@ -349,14 +356,14 @@ function createIncidentsList(isSorted) {
     results.appendChild(placeholder);
     return;
   }
-  let incidentsList = DomHelpers.elementFactory("div", "tt-incidents-list");
+  var incidentsList = DomHelpers.elementFactory("div", "tt-incidents-list");
   displayedIncidentsData.forEach(function (markerData) {
-    let incidentsItemRow = createIncidentItemRow(markerData);
+    var incidentsItemRow = createIncidentItemRow(markerData);
     incidentsList.appendChild(incidentsItemRow);
   });
   incidentsList.addEventListener("click", handleResultItemClick);
   results.appendChild(incidentsList);
-  let selectedIncidentElement = document.querySelector(
+  var selectedIncidentElement = document.querySelector(
     'div[data-id="' + selectedIncidentId + '"]'
   );
   if (selectedIncidentId && selectedIncidentElement) {
@@ -381,7 +388,7 @@ function findParentNodeId(element, dataId) {
   return null;
 }
 function handleIncidentsSort(event) {
-  let actualMarkersData = displayedIncidentsData,
+  var actualMarkersData = displayedIncidentsData,
     sortProperty = event.currentTarget.getAttribute("data-sort");
   sortDirection =
     sortedByValue === sortProperty
@@ -395,7 +402,7 @@ function handleIncidentsSort(event) {
   createIncidentsList(true);
 }
 function handleResultItemClick(event) {
-  let target = event.target,
+  var target = event.target,
     markerId = findParentNodeId(target, "data-id"),
     selectedIncidentElementClassList = document.querySelector(
       'div[data-id="' + markerId + '"]'
@@ -403,13 +410,13 @@ function handleResultItemClick(event) {
   if (selectedIncidentElementClassList.contains(selectedClass)) {
     return;
   }
-  for (let marker in incidentsMarkers) {
-    let currentMarker = incidentsMarkers[marker];
+  for (var marker in incidentsMarkers) {
+    var currentMarker = incidentsMarkers[marker];
     if (currentMarker.getPopup().isOpen()) {
       currentMarker.togglePopup();
     }
   }
-  let selectedMarker = incidentsMarkers[markerId];
+  var selectedMarker = incidentsMarkers[markerId];
   if (!selectedMarker.getPopup().isOpen()) {
     selectedMarker.togglePopup();
   }
@@ -421,7 +428,7 @@ function handleResultItemClick(event) {
   });
 }
 function makeResultItemSelected(markerId) {
-  let selectedIncidentElementClassList = document.querySelector(
+  var selectedIncidentElementClassList = document.querySelector(
       'div[data-id="' + markerId + '"]'
     ).classList,
     selectedMarker = incidentsMarkers[markerId],
