@@ -23,16 +23,16 @@ Papa.parse("AccidentsBig.csv", {
     results.data.shift();
     results.data.forEach((row) => {
       if (!isNaN(row[1]) && !isNaN(row[2])) {
-        const data = `lat: ${row[2]}, lon: ${row[1]}
-                    <br>accident severity: ${row[4]}
-                    <br>number of vehicles: ${row[5]}
-                    <br>number of casualties: ${row[6]}
-                    <br>day of week: ${row[7]}
-                    <br>date: ${row[29]}
-                    <br>time: ${row[8]}
-                    <br>speed limit: ${row[14]}
-                    <br>weather conditions: ${weatherConditions[row[22]]}
-                    <br>light conditions: ${lightConditions[row[21]]}
+        const data = `Lat: ${row[2]}, Lon: ${row[1]}
+                    <br>Accident Severity: ${accident_severity[row[4]]}
+                    <br>Number of Vehicles: ${row[5]}
+                    <br>Number of Casualties: ${row[6]}
+                    <br>Day of Week: ${row[7]}
+                    <br>Date: ${row[29]}
+                    <br>Time: ${row[8]}
+                    <br>Speed Limit: ${row[14]}
+                    <br>Weather Conditions: ${weatherConditions[row[22]]}
+                    <br>Light Conditions: ${lightConditions[row[21]]}
                 `;
         const marker = new tt.Marker()
           .setLngLat([row[1], row[2]])
@@ -42,7 +42,7 @@ Papa.parse("AccidentsBig.csv", {
         marker._element.addEventListener("click", () => {
           document.getElementsByClassName("in-btn")[0].disabled = false;
           currentMarkerData = {
-            severity: row[4],
+            severity: accident_severity[row[4]],
             vehicles: row[5],
             casualties: row[6],
             dayOfWeek: row[7],
@@ -74,6 +74,12 @@ const lightConditions = {
   2: "Dim",
   3: "Dark",
   4: "Very Dark",
+};
+
+const accident_severity = {
+  1: "Slight",
+  2: "Serious",
+  3: "Fatal",
 };
 
 let currentMarkerData;
@@ -116,9 +122,9 @@ Papa.parse("AccidentsBig.csv", {
   download: true,
   header: true,
   complete: function (results) {
-    var data = results.data;
+    let data = results.data;
 
-    var heatmapData = {
+    let heatmapData = {
       type: "FeatureCollection",
       features: data.map(function (point) {
         return {
@@ -151,9 +157,9 @@ Papa.parse("AccidentsBig.csv", {
 });
 
 // Accident Data List
-var displayedIncidentsData = [],
+let displayedIncidentsData = [],
   formatters = Formatters;
-var iconsMapping = {
+let iconsMapping = {
   0: "danger",
   1: "accident",
   2: "fog",
@@ -168,15 +174,15 @@ var iconsMapping = {
   11: "flooding",
   14: "brokendownvehicle",
 };
-var incidentSeverity = {
+let incidentSeverity = {
   0: "unknown",
   1: "minor",
   2: "moderate",
   3: "major",
   4: "undefined",
 };
-var incidentsData = {};
-var incidentsMarkers = null,
+let incidentsData = {};
+let incidentsMarkers = null,
   results = document.querySelector(".js-results"),
   selectedClass = "-selected",
   selectedIncidentId = "",
@@ -204,7 +210,7 @@ map.on("load", function () {
   });
 });
 function compareIncidentCategory(a, b) {
-  var firstValue = a.properties[sortedByValue],
+  let firstValue = a.properties[sortedByValue],
     secondValue = b.properties[sortedByValue],
     modifier = sortDirection === "asc" ? 1 : -1;
   if (typeof firstValue === "string") {
@@ -214,7 +220,7 @@ function compareIncidentCategory(a, b) {
 }
 function convertToGeoJson(data) {
   return data.incidents.reduce(function (result, feature) {
-    var current = {};
+    let current = {};
     feature.geometry.type = "Point";
     feature.geometry.coordinates = feature.geometry.coordinates[0];
     current[feature.properties.id] = feature;
@@ -222,9 +228,9 @@ function convertToGeoJson(data) {
   }, {});
 }
 function createDisplayedIncidentsData() {
-  var array = [];
-  for (var incidentId in incidentsData) {
-    var incident = incidentsData[incidentId],
+  let array = [];
+  for (let incidentId in incidentsData) {
+    let incident = incidentsData[incidentId],
       properties = incident.properties;
     if (!properties.delay) {
       properties.delay = 0;
@@ -237,7 +243,7 @@ function createDisplayedIncidentsData() {
   return array;
 }
 function createIncidentDetailsContent(properties) {
-  var incidentDetailsElement = DomHelpers.elementFactory("div", "");
+  let incidentDetailsElement = DomHelpers.elementFactory("div", "");
   incidentDetailsElement.innerHTML =
     '<div class="tt-incidents-details">' +
     '<div class="tt-traffic-icon -details">' +
@@ -267,7 +273,7 @@ function separateRoadNumbers(roadNumbers) {
   return roadNumbers.length > 1 ? roadNumbers.join(" - ") : roadNumbers;
 }
 function createIncidentHeader() {
-  var headerNames = [
+  let headerNames = [
       {
         text: "Incident",
         attribute: "from",
@@ -284,7 +290,7 @@ function createIncidentHeader() {
     incidentHeader = document.querySelector(".tt-side-panel__header");
   incidentHeader.innerHTML = "";
   headerNames.forEach(function (headerName) {
-    var headerElement = DomHelpers.elementFactory("div", ""),
+    let headerElement = DomHelpers.elementFactory("div", ""),
       sortIcon =
         headerName.attribute === sortedByValue
           ? sortDirection === "asc"
@@ -304,10 +310,10 @@ function createIncidentHeader() {
   });
 }
 function createIncidentItemRow(markerData) {
-  var properties = markerData.properties,
+  let properties = markerData.properties,
     delaySeconds = properties.delay,
     lengthMeters = properties.length;
-  var incidentDelay = DomHelpers.elementFactory(
+  let incidentDelay = DomHelpers.elementFactory(
       "div",
       "",
       formatters.formatToDurationTimeString(delaySeconds)
@@ -331,7 +337,7 @@ function createIncidentItemRow(markerData) {
 function createIncidentsList(isSorted) {
   results.innerHTML = "";
   if (!displayedIncidentsData.length) {
-    var placeholder = DomHelpers.elementFactory(
+    let placeholder = DomHelpers.elementFactory(
       "div",
       "tt-overflow__placeholder -small",
       "No data for this view, try to move or zoom..."
@@ -339,14 +345,14 @@ function createIncidentsList(isSorted) {
     results.appendChild(placeholder);
     return;
   }
-  var incidentsList = DomHelpers.elementFactory("div", "tt-incidents-list");
+  let incidentsList = DomHelpers.elementFactory("div", "tt-incidents-list");
   displayedIncidentsData.forEach(function (markerData) {
-    var incidentsItemRow = createIncidentItemRow(markerData);
+    let incidentsItemRow = createIncidentItemRow(markerData);
     incidentsList.appendChild(incidentsItemRow);
   });
   incidentsList.addEventListener("click", handleResultItemClick);
   results.appendChild(incidentsList);
-  var selectedIncidentElement = document.querySelector(
+  let selectedIncidentElement = document.querySelector(
     'div[data-id="' + selectedIncidentId + '"]'
   );
   if (selectedIncidentId && selectedIncidentElement) {
@@ -371,7 +377,7 @@ function findParentNodeId(element, dataId) {
   return null;
 }
 function handleIncidentsSort(event) {
-  var actualMarkersData = displayedIncidentsData,
+  let actualMarkersData = displayedIncidentsData,
     sortProperty = event.currentTarget.getAttribute("data-sort");
   sortDirection =
     sortedByValue === sortProperty
@@ -385,7 +391,7 @@ function handleIncidentsSort(event) {
   createIncidentsList(true);
 }
 function handleResultItemClick(event) {
-  var target = event.target,
+  let target = event.target,
     markerId = findParentNodeId(target, "data-id"),
     selectedIncidentElementClassList = document.querySelector(
       'div[data-id="' + markerId + '"]'
@@ -393,13 +399,13 @@ function handleResultItemClick(event) {
   if (selectedIncidentElementClassList.contains(selectedClass)) {
     return;
   }
-  for (var marker in incidentsMarkers) {
-    var currentMarker = incidentsMarkers[marker];
+  for (let marker in incidentsMarkers) {
+    let currentMarker = incidentsMarkers[marker];
     if (currentMarker.getPopup().isOpen()) {
       currentMarker.togglePopup();
     }
   }
-  var selectedMarker = incidentsMarkers[markerId];
+  let selectedMarker = incidentsMarkers[markerId];
   if (!selectedMarker.getPopup().isOpen()) {
     selectedMarker.togglePopup();
   }
@@ -411,7 +417,7 @@ function handleResultItemClick(event) {
   });
 }
 function makeResultItemSelected(markerId) {
-  var selectedIncidentElementClassList = document.querySelector(
+  let selectedIncidentElementClassList = document.querySelector(
       'div[data-id="' + markerId + '"]'
     ).classList,
     selectedMarker = incidentsMarkers[markerId],
