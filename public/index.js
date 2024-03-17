@@ -1,4 +1,5 @@
 const apiKey = "pCKjhiDCnrgyjAqbqaeEMeJYmenJGWz6";
+const TRAFFIC_INCIDENTS_STYLE = "s0";
 
 const map = tt.map({
   key: apiKey,
