@@ -27,50 +27,90 @@ map.on("load", function () {
   map.showTrafficFlow();
 });
 
-Papa.parse("AccidentsBig.csv", {
-  download: true,
-  header: false,
-  dynamicTyping: true,
-  complete: (results) => {
-    results.data.shift();
-    results.data.forEach((row) => {
-      if (!isNaN(row[1]) && !isNaN(row[2])) {
-        const data = `Lat: ${row[2]}, Lon: ${row[1]}
-                    <br>Accident Severity: ${accident_severity[row[4]]}
-                    <br>Number of Vehicles: ${row[5]}
-                    <br>Number of Casualties: ${row[6]}
-                    <br>Day of Week: ${row[7]}
-                    <br>Date: ${row[29]}
-                    <br>Time: ${row[8]}
-                    <br>Speed Limit: ${row[14]}
-                    <br>Weather Conditions: ${weatherConditions[row[22]]}
-                    <br>Light Conditions: ${lightConditions[row[21]]}
-                `;
-        const marker = new tt.Marker()
-          .setLngLat([row[1], row[2]])
-          .addTo(map)
-          .setPopup(new tt.Popup().setHTML(data));
+var markers = [];
 
-        marker._element.addEventListener("click", () => {
-          document.getElementsByClassName("in-btn")[0].disabled = false;
-          currentMarkerData = {
-            severity: accident_severity[row[4]],
-            vehicles: row[5],
-            casualties: row[6],
-            dayOfWeek: row[7],
-            date: row[29],
-            time: row[8],
-            speedLimit: row[14],
-            weatherConditions: weatherConditions[row[22]],
-            lightConditions: lightConditions[row[21]],
-          };
-        });
-      } else {
-        console.error("Invalid data: ", row);
+const RemoveAllMarkers = () => {
+  markers.forEach((marker) => {
+    marker.remove();
+  });
+  markers = [];
+};
+
+const RemoveHeatMapLayer = () => {
+  if (map.getLayer("heatmap")) {
+    map.removeLayer("heatmap");
+  }
+};
+
+const BlackSpotLocations = async () => {
+  Papa.parse("AccidentsBig.csv", {
+    download: true,
+    header: false,
+    dynamicTyping: true,
+    complete: (results) => {
+      results.data.shift();
+      results.data.forEach((row) => {
+        if (!isNaN(row[1]) && !isNaN(row[2])) {
+          const data = `Lat: ${row[2]}, Lon: ${row[1]}
+                      <br>Accident Severity: ${accident_severity[row[4]]}
+                      <br>Number of Vehicles: ${row[5]}
+                      <br>Number of Casualties: ${row[6]}
+                      <br>Day of Week: ${row[7]}
+                      <br>Date: ${row[29]}
+                      <br>Time: ${row[8]}
+                      <br>Speed Limit: ${row[14]}
+                      <br>Weather Conditions: ${weatherConditions[row[22]]}
+                      <br>Light Conditions: ${lightConditions[row[21]]}
+                  `;
+          const marker = new tt.Marker()
+            .setLngLat([row[1], row[2]])
+            .addTo(map)
+            .setPopup(new tt.Popup().setHTML(data));
+          markers.push(marker);
+          marker._element.addEventListener("click", () => {
+            document.getElementsByClassName("in-btn")[0].disabled = false;
+            currentMarkerData = {
+              severity: accident_severity[row[4]],
+              vehicles: row[5],
+              casualties: row[6],
+              dayOfWeek: row[7],
+              date: row[29],
+              time: row[8],
+              speedLimit: row[14],
+              weatherConditions: weatherConditions[row[22]],
+              lightConditions: lightConditions[row[21]],
+            };
+          });
+        } else {
+          console.error("Invalid data: ", row);
+        }
+      });
+    },
+  });
+};
+
+const GraySpotLocations = async () => {
+  fetch("/api/v1/highest_risk_locations", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      for (let i = 0; i < data.length; i++) {
+        const html = `Lat: ${data[i].latitude}, Lon: ${data[i].longitude}
+                    <br>Accident Severity: ${
+                      accident_severity[data[i].Accident_Severity]
+                    }
+                `;
+        const marker = new tt.Marker({
+          color: "gray",
+        })
+          .setLngLat([data[i].longitude, data[i].latitude])
+          .addTo(map)
+          .setPopup(new tt.Popup().setHTML(html));
+        markers.push(marker);
       }
     });
-  },
-});
+};
 
 const weatherConditions = {
   0: "Sunny",
@@ -129,44 +169,61 @@ const getInsights = async () => {
   }
 };
 
-// Heatmap
-Papa.parse("AccidentsBig.csv", {
-  download: true,
-  header: true,
-  complete: function (results) {
-    var data = results.data;
+// Heatmap for blackspots
+const HeatMapForBlackSpots = () => {
+  Papa.parse("AccidentsBig.csv", {
+    download: true,
+    header: true,
+    complete: function (results) {
+      var data = results.data;
 
-    var heatmapData = {
-      type: "FeatureCollection",
-      features: data.map(function (point) {
-        return {
-          geometry: {
-            type: "Point",
-            coordinates: [point.longitude, point.latitude],
-            intensity: point.accident_severity,
+      var heatmapData = {
+        type: "FeatureCollection",
+        features: data.map(function (point) {
+          return {
+            geometry: {
+              type: "Point",
+              coordinates: [point.longitude, point.latitude],
+              intensity: point.accident_severity,
+            },
+            properties: {},
+          };
+        }),
+      };
+
+      map.on("load", function () {
+        map.addLayer({
+          id: "heatmap",
+          type: "heatmap",
+          source: {
+            type: "geojson",
+            data: heatmapData,
           },
-          properties: {},
-        };
-      }),
-    };
-
-    map.on("load", function () {
-      map.addLayer({
-        id: "heatmap",
-        type: "heatmap",
-        source: {
-          type: "geojson",
-          data: heatmapData,
-        },
-        paint: {
-          "heatmap-intensity": 3,
-          "heatmap-radius": 40,
-          "heatmap-opacity": 0.6,
-        },
+          paint: {
+            "heatmap-intensity": 3,
+            "heatmap-radius": 40,
+            "heatmap-opacity": 0.6,
+          },
+        });
       });
-    });
-  },
-});
+    },
+  });
+};
+
+const SwitchZones = async (zone) => {
+  if (zone == "blackspots") {
+    RemoveAllMarkers();
+    RemoveHeatMapLayer();
+    await BlackSpotLocations();
+    HeatMapForBlackSpots();
+  } else if (zone == "grayspots") {
+    RemoveAllMarkers();
+    RemoveHeatMapLayer();
+    await GraySpotLocations();
+  }
+};
+
+SwitchZones("blackspots");
 
 // Accident Data List
 var displayedIncidentsData = [],
