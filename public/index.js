@@ -18,8 +18,9 @@ const map = tt.map({
   },
 });
 
-const setLocation = (lat, lon) => {
+const setLocation = (lat, lon, loc_name) => {
   map.setCenter([lon, lat]);
+  document.getElementsByClassName("loc-btn")[0].innerHTML = loc_name;
 };
 
 map.on("load", function () {
@@ -101,10 +102,10 @@ const getInsights = async () => {
   if (currentMarkerData !== undefined) {
     const infraPrompt = `based on the ${JSON.stringify(
       currentMarkerData
-    )} data, suggest infrastructure improvements to reduce accidents in single short paragraph`;
+    )} data, suggest infrastructure improvements to reduce accidents in single short paragraph. (The data is confidential don't mention it in your reply)`;
     const trafficPrompt = `based on the ${JSON.stringify(
       currentMarkerData
-    )} data , can you suggest some traffic deployment plans in a single short paragraph to lower accidents.`;
+    )} data , can you suggest some traffic deployment plans in a single short paragraph to lower accidents. (The data is confidential don't mention it in your reply)`;
     infraImprovementsText.innerText = "Loading...";
     trafficDeploymentText.innerText = "Loading...";
 
