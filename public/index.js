@@ -36,9 +36,15 @@ const RemoveAllMarkers = () => {
   markers = [];
 };
 
-const RemoveHeatMapLayer = () => {
+const hideHeatmapLayer = () => {
   if (map.getLayer("heatmap")) {
-    map.removeLayer("heatmap");
+    map.setLayoutProperty("heatmap", "visibility", "none");
+  }
+};
+
+const showHeatmapLayer = () => {
+  if (map.getLayer("heatmap")) {
+    map.setLayoutProperty("heatmap", "visibility", "visible");
   }
 };
 
@@ -170,56 +176,53 @@ const getInsights = async () => {
 };
 
 // Heatmap for blackspots
-const HeatMapForBlackSpots = () => {
-  Papa.parse("AccidentsBig.csv", {
-    download: true,
-    header: true,
-    complete: function (results) {
-      var data = results.data;
+Papa.parse("AccidentsBig.csv", {
+  download: true,
+  header: true,
+  complete: function (results) {
+    var data = results.data;
 
-      var heatmapData = {
-        type: "FeatureCollection",
-        features: data.map(function (point) {
-          return {
-            geometry: {
-              type: "Point",
-              coordinates: [point.longitude, point.latitude],
-              intensity: point.accident_severity,
-            },
-            properties: {},
-          };
-        }),
-      };
+    var heatmapData = {
+      type: "FeatureCollection",
+      features: data.map(function (point) {
+        return {
+          geometry: {
+            type: "Point",
+            coordinates: [point.longitude, point.latitude],
+            intensity: point.accident_severity,
+          },
+          properties: {},
+        };
+      }),
+    };
 
-      map.on("load", function () {
-        map.addLayer({
-          id: "heatmap",
-          type: "heatmap",
-          source: {
-            type: "geojson",
-            data: heatmapData,
-          },
-          paint: {
-            "heatmap-intensity": 3,
-            "heatmap-radius": 40,
-            "heatmap-opacity": 0.6,
-          },
-        });
+    map.on("load", function () {
+      map.addLayer({
+        id: "heatmap",
+        type: "heatmap",
+        source: {
+          type: "geojson",
+          data: heatmapData,
+        },
+        paint: {
+          "heatmap-intensity": 3,
+          "heatmap-radius": 40,
+          "heatmap-opacity": 0.6,
+        },
       });
-    },
-  });
-};
+    });
+  },
+});
 
 const SwitchZones = async (zone) => {
   if (zone == "blackspots") {
+    BlackSpotLocations();
+    showHeatmapLayer();
     RemoveAllMarkers();
-    RemoveHeatMapLayer();
-    await BlackSpotLocations();
-    HeatMapForBlackSpots();
   } else if (zone == "grayspots") {
+    GraySpotLocations();
+    hideHeatmapLayer();
     RemoveAllMarkers();
-    RemoveHeatMapLayer();
-    await GraySpotLocations();
   }
 };
 
