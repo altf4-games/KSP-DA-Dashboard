@@ -219,14 +219,18 @@ const SwitchZones = async (zone) => {
     BlackSpotLocations();
     showHeatmapLayer();
     RemoveAllMarkers();
+    document.getElementsByClassName("zon-btn")[0].innerHTML = "Black Spots";
   } else if (zone == "grayspots") {
     GraySpotLocations();
     hideHeatmapLayer();
     RemoveAllMarkers();
+    document.getElementsByClassName("zon-btn")[0].innerHTML = "Gray Spots";
   }
 };
 
-SwitchZones("blackspots");
+BlackSpotLocations();
+showHeatmapLayer();
+RemoveAllMarkers();
 
 // Accident Data List
 var displayedIncidentsData = [],
