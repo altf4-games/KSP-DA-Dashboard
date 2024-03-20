@@ -104,3 +104,103 @@ const drawChart = (accidentsByDay) => {
     },
   });
 };
+
+// plot Gender_Distribution.csv
+
+fetch("Accident_Karnataka_Year-Wise.csv")
+  .then((response) => response.text())
+  .then((data) => {
+    const rows = data.split("\n").slice(1); // Split data into rows, excluding header
+    const years = [];
+    const totalAccidents = [];
+
+    // Parse each row
+    rows.forEach((row) => {
+      const columns = row.split(",");
+      const year = columns[0];
+      const accidents = parseInt(columns[1]);
+
+      years.push(year);
+      totalAccidents.push(accidents);
+    });
+
+    // Create Chart.js chart
+    const ctx = document.getElementById("year-wise-chart").getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: years,
+        datasets: [
+          {
+            label: "Total Accidents",
+            data: totalAccidents,
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
+
+const data = {
+  labels: ["Male", "Female"],
+  datasets: [
+    {
+      data: [8602, 1436],
+      backgroundColor: ["#36A2EB", "#FF6384"],
+      hoverBackgroundColor: ["#36A2EB", "#FF6384"],
+    },
+  ],
+};
+
+const accidentsData = [
+  { gender: "Male", count: 8602 },
+  { gender: "Female", count: 1436 },
+];
+
+// Extract labels and data
+const genders = accidentsData.map((item) => item.gender);
+const counts = accidentsData.map((item) => item.count);
+
+// Create Chart.js chart
+const ctx = document.getElementById("genderChart").getContext("2d");
+ctx.canvas.width = 300;
+ctx.canvas.height = 300;
+const chart = new Chart(ctx, {
+  type: "pie",
+  data: {
+    labels: genders,
+    datasets: [
+      {
+        data: counts,
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.6)", // Red for males
+          "rgba(54, 162, 235, 0.6)", // Blue for females
+        ],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+        maintainAspectRatio: false,
+      },
+    ],
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Accidents Involving Males and Females",
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  },
+});
