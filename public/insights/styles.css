@@ -1,4 +1,14 @@
+@font-face {
+    font-family: Blackout;
+    src: url("../Blackout2AM.ttf");
+}
+
 body {
     color: rgb(23, 23, 23);
     background-color: white;
+}
+
+.navbar-brand {
+    font-family: Blackout, Open Sans;
+    font-size: large;
 }
