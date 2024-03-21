@@ -106,6 +106,7 @@ const GraySpotLocations = async () => {
                     <br>Accident Severity: ${
                       accident_severity[data[i].Accident_Severity]
                     }
+                    <br>Probability: ${data[i].Probability}
                 `;
         const marker = new tt.Marker({
           color: "gray",
