@@ -59,6 +59,11 @@ This dashboard is built using the following technologies:
 [Time Series](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3)<br>
 [Accident Prediction](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3?usp=sharing)
 
+## Contributors
+
+[![Contributors Graph](https://contributors-img.web.app/image?repo=altf4-games/KSP-DA-Dashboard)](https://github.com/altf4-games/KSP-DA-Dashboard/graphs/contributors)
+#### People who made this possible ❤
+
 ## License
 
 This project is licensed under the MIT License.
