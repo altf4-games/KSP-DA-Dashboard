@@ -2,7 +2,7 @@
 
 ## Description
 
-This dashboard provides a visual representation of data related to Accidents . It allows users to track key metrics, identify trends, and gain insights into trends of Road Accidnets 
+This dashboard provides a visual representation of data related to Accidents . It allows users to track key metrics, identify trends, and gain insights into trends of Road Accidents. 
 
 ### Dashboard
 
@@ -17,7 +17,7 @@ This dashboard provides a visual representation of data related to Accidents . I
 Clone this repository:
 
 ```bash
-git clone https://github.com/your-username/ksp-da-dashboard.git
+git clone https://github.com/altf4-games/ksp-da-dashboard.git
 ```
 
 Install dependencies:
@@ -45,7 +45,7 @@ The data for this dashboard is fetched from Karnataka Accident Report 2022 Provi
 
 ## Deployment
 
-This dashboard is currently deployed at [https://vercel.com/docs/dashboard-features](https://vercel.com/docs/dashboard-features).
+This dashboard is currently deployed at [https://ksp-da-dashboard.vercel.app/](https://ksp-da-dashboard.vercel.app/).
 
 ## Tech Stack
 
