@@ -54,6 +54,11 @@ This dashboard is built using the following technologies:
 - Backend: Node.js, Express, Python
 - Data Visualization Library: Chart.js , TomTom API
 
+## Colab Files For ML Model
+
+[Time Series](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3)<br>
+[Accident Prediction](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3?usp=sharing)
+
 ## License
 
 This project is licensed under the MIT License.
