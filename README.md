@@ -6,11 +6,11 @@ This dashboard provides a visual representation of data related to Accidents . I
 
 ### Dashboard
 
-<img width="907" alt="image" src="https://github.com/spark-lucifer/KSP-DA-Dashboard/assets/60466807/d221c2d1-6fd0-4e5b-a5fd-7b001571587e">
+![image](https://github.com/altf4-games/KSP-DA-Dashboard/assets/60466807/e6ff2847-e8e7-49e7-8eb0-6e23d5640ec3)
 
 ### Graph Visualization 
 
-<img width="905" alt="image" src="https://github.com/spark-lucifer/KSP-DA-Dashboard/assets/60466807/38690822-1eaf-40bb-a74d-99139a69a021">
+![image](https://github.com/altf4-games/KSP-DA-Dashboard/assets/60466807/b11e0390-a4cb-42b1-922b-7678a6138225)
 
 ## Getting Started
 
