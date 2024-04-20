@@ -1,0 +1,66 @@
+@font-face {
+    font-family: Blackout;
+    src: url('../Blackout2AM.ttf');
+}
+
+.navbar-brand {
+    font-family: Blackout, Open Sans;
+    font-size: large;
+    color: white;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+.navbar {
+    background-color: #000;
+}
+
+.nav-link {
+    color: #fff !important;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+.navbar-toggler {
+    border-color: #fff;
+}
+
+.navbar-toggler-icon {
+    background-color: #fff;
+}
+
+.form-control {
+    background-color: #000;
+    color: #fff;
+    border-color: #fff;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.btn-primary {
+    background-color: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #ccc;
+    color: #000;
+    border-color: #ccc;
+}
+
+#result {
+    margin-top: 20px;
+    color: #fff;
+}
+
+h1 {
+    color: #fff;
+}
