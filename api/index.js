@@ -4,6 +4,8 @@ const app = express();
 const cors = require("cors");
 
 const fs = require("fs");
+const nodemailer = require("nodemailer");
+const bodyParser = require("body-parser");
 const fetch = require("node-fetch");
 const multer = require("multer");
 const upload = multer();
@@ -11,6 +13,7 @@ const upload = multer();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 require("dotenv").config();
 
@@ -64,6 +67,58 @@ app.post(
     }
   }
 );
+
+const sendEmail = async (to, subject, text) => {
+  try {
+    let transporter = nodemailer.createTransport({
+      service: "outlook",
+      auth: {
+        user: process.env["FROM_EMAIL"],
+        pass: process.env["FROM_EMAIL_PASSWORD"],
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: process.env["FROM_EMAIL"],
+      to: to,
+      subject: subject,
+      text: text,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
+};
+
+const checkAndSendEmail = async () => {
+  try {
+    const apiUrl =
+      "https://dane-profound-arguably.ngrok-free.app/highest_risk_locations";
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    const threshold = 0.17;
+    const filteredData = data.filter((entry) => entry.Probability > threshold);
+
+    if (filteredData.length > 0) {
+      let emailContent = "High-risk locations alert:\n\n";
+      filteredData.forEach((entry) => {
+        emailContent += `Latitude: ${entry.latitude}, Longitude: ${entry.longitude}, Accident Severity: ${entry.Accident_Severity}\n`;
+      });
+      await sendEmail(
+        process.env["RECIPIENT_EMAIL"],
+        "High-risk locations alert",
+        emailContent
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching data or sending email:", error);
+  }
+};
+
+// Schedule to check and send email every hour - 3600000 ms
+setInterval(checkAndSendEmail, 3600000);
 
 async function generateText(parameter) {
   const chatCompletion = await openai.chat.completions.create({
