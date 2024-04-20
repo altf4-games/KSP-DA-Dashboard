@@ -98,7 +98,7 @@ const checkAndSendEmail = async () => {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    const threshold = 0.17;
+    const threshold = 0.08;
     const filteredData = data.filter((entry) => entry.Probability > threshold);
 
     if (filteredData.length > 0) {
@@ -116,6 +116,8 @@ const checkAndSendEmail = async () => {
     console.error("Error fetching data or sending email:", error);
   }
 };
+
+module.exports = { checkAndSendEmail };
 
 // Schedule to check and send email every hour - 3600000 ms
 setInterval(checkAndSendEmail, 3600000);
