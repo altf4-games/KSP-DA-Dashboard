@@ -12,6 +12,11 @@ This dashboard provides a visual representation of data related to Accidents . I
 
 ![image](https://github.com/altf4-games/KSP-DA-Dashboard/assets/60466807/b11e0390-a4cb-42b1-922b-7678a6138225)
 
+### Accident Detection
+
+![Screenshot 2024-04-20 133635](https://github.com/altf4-games/KSP-DA-Dashboard/assets/39883432/cf4a6c69-5cf3-43e7-bd4f-c894b0b6e1d9)
+
+
 ### Email Notifications
 Email Alert: 
 Our real-time accident prediction feature can notify you via email when there's a high likelihood of an accident.
