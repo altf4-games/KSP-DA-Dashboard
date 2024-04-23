@@ -19,7 +19,7 @@ This dashboard provides a visual representation of data related to Accidents . I
 
 ### Email Notifications
 Email Alert: 
-Our real-time accident prediction feature can notify you via email when there's a high likelihood of an accident.
+Our real-time accident prediction feature can notify you via email when there's a high likelihood of an accident. <br>
 <img src="https://github.com/altf4-games/KSP-DA-Dashboard/assets/39883432/50c69824-a04b-4f0f-8444-b29b774a1b43" height=500>
 
 
