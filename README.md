@@ -12,6 +12,12 @@ This dashboard provides a visual representation of data related to Accidents . I
 
 ![image](https://github.com/altf4-games/KSP-DA-Dashboard/assets/60466807/b11e0390-a4cb-42b1-922b-7678a6138225)
 
+### Email Notifications
+Email Alert: 
+Our real-time accident prediction feature can notify you via email when there's a high likelihood of an accident.
+<img src="https://github.com/altf4-games/KSP-DA-Dashboard/assets/39883432/50c69824-a04b-4f0f-8444-b29b774a1b43" height=500>
+
+
 ## Getting Started
 
 Clone this repository:
@@ -37,7 +43,7 @@ This will start the server and open the dashboard in your web browser at http://
 ## Usage
 
 The dashboard is designed to be interactive. Users can explore the data by clicking on different elements.
-Some dashboards may allow users to filter or customize the data that is displayed.
+Our dashboard allows users to filter or customize the data that is displayed.
 
 ## Data Sources
 
@@ -52,11 +58,12 @@ This dashboard is currently deployed at [https://ksp-da-dashboard.vercel.app/](h
 This dashboard is built using the following technologies:
 - Frontend: JavaScript, HTML, CSS
 - Backend: Node.js, Express, Python
+- ML: Pytorch, Scikit-learn
 - Data Visualization Library: Chart.js , TomTom API
 
 ## Colab Files For ML Model
 
-[Time Series](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3)<br>
+[Time Series](https://colab.research.google.com/drive/1AJP2je-c89Y9Tk0LWxSDnezS3XcZOdGI?usp=sharing)<br>
 [Accident Prediction](https://colab.research.google.com/drive/11vaB1Qt8xwdrjBj5XPersSxZzL6kSpA3?usp=sharing)
 
 ## Contributors
