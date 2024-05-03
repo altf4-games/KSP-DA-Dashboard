@@ -69,6 +69,7 @@ async function generateText(parameter) {
   const chatCompletion = await openai.chat.completions.create({
     messages: [{ role: "user", content: `${parameter}` }],
     model: "gpt-3.5-turbo",
+    max_tokens: 4096,
   });
   return chatCompletion;
 }
